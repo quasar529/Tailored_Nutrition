@@ -4,6 +4,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Tailored Nutrition</title>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap"
+      rel="stylesheet"
+    />
   </head>
   <body>
     <header class="title">Find Your Nutrition-Tailored Cook!</header>
@@ -11,9 +16,29 @@
       <section class="ingredient-form">
         <h2>Choose What you want</h2>
         <form id="ingredientForm">
-          <input type="checkbox" name="ingredient" value="protein" />Protein
-          <input type="checkbox" name="ingredient" value="carb" />carbohydrate
-          <input type="checkbox" name="ingredient" value="fat" />fat
+          <div class="input-wrapper">
+            <input
+              type="checkbox"
+              class="ingredient"
+              name="ingredient1"
+              value="protein"
+            />
+            <label for="ingredient1">protein</label>
+            <input
+              type="checkbox"
+              class="ingredient"
+              name="ingredient2"
+              value="carb"
+            />
+            <label for="ingredient2">carbohydrate</label>
+            <input
+              type="checkbox"
+              class="ingredient"
+              name="ingredient3"
+              value="fat"
+            />
+            <label for="ingredient3">fat</label>
+          </div>
 
           <button type="submit" id="submitBtn">SUBMIT</button>
         </form>

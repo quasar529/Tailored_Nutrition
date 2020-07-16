@@ -13,17 +13,16 @@
 //   }
 // }
 
-async function getCook() {
+async function getCook(string) {
   try {
-    let typeOfNut = "";
-    for (let i = 0; i < arguments.length; i++) {
-      typeOfNut += arguments[i];
-    }
+    // let typeOfNut = "";
+    // for (let i = 0; i < arguments.length; i++) {
+    //   typeOfNut += arguments[i];
+    // }
     let results = await fetch(
-      `https://api.spoonacular.com/recipes/findByNutrients?apiKey=9ef8ed83e4164a2eb14cf5bff7669c9a&${typeOfNut}&random&number=10`
+      `https://api.spoonacular.com/recipes/findByNutrients?apiKey=9ef8ed83e4164a2eb14cf5bff7669c9a&${string}&random&number=5`
     );
     let data = await results.json();
-
     return data;
   } catch (error) {
     console.log(error);
@@ -39,17 +38,21 @@ async function getCook() {
 //     // console.log(img, inst, title);
 //   });
 // });
-
+const main = document.querySelector("main");
 const form = document.getElementById("ingredientForm");
-console.log(form);
 const section = document.querySelector(".ingredient-form");
 const submitBtn = document.querySelector("#submitBtn");
-
 const numForm = document.createElement("form");
+
 form.addEventListener("submit", function (event) {
   event.preventDefault();
   submitBtn.disabled = true;
-  let allIngredients = document.getElementsByName("ingredient");
+
+  let infoDiv = document.createElement("div");
+  infoDiv.innerText = "Type minimum amount of each nutrient";
+  infoDiv.classList.add("infoDiv");
+
+  const allIngredients = document.getElementsByClassName("ingredient");
   const protein = allIngredients[0];
   const carb = allIngredients[1];
   const fat = allIngredients[2];
@@ -58,9 +61,11 @@ form.addEventListener("submit", function (event) {
   let fatChecked = fat.checked;
 
   if (proteinChecked || carbChecked || fatChecked) {
+    section.appendChild(infoDiv);
     section.appendChild(numForm);
+    numForm.id = "numForm";
     if (proteinChecked) {
-      const pInput = makeInput("Protein");
+      const pInput = makeInput("protein");
       numForm.appendChild(pInput);
     }
 
@@ -79,15 +84,47 @@ form.addEventListener("submit", function (event) {
     //numForm.action = "result.html";
   }
 });
+let cookSection = document.createElement("section");
+cookSection.id = "cookSection";
+main.appendChild(cookSection);
+
 numForm.addEventListener("submit", () => {
+  console.log(numForm);
+  let string = "";
   event.preventDefault();
-  const numOfProtein = console.log(numForm.firstChild.value);
+  if (numForm.querySelector("#protein")) {
+    const numOfProtein = numForm.querySelector("#protein").value;
+    string += `minProtein=${numOfProtein}&`;
+    console.log(numOfProtein);
+  }
+  if (numForm.querySelector("#carbohydrate")) {
+    const numOfCarbohydrate = numForm.querySelector("#carbohydrate").value;
+    string += `minCarbs=${numOfCarbohydrate}&`;
+  }
+  if (numForm.querySelector("#fat")) {
+    const numOfFat = numForm.querySelector("#fat").value;
+    string += `minFat=${numOfFat}&`;
+  }
+
+  getCook(string).then((recipes) => {
+    for (let i = 0; i < 5; i++) {
+      let div = document.createElement("div");
+      div.innerHTML = `<h3>${recipes[i].title}</h3>
+      <img src="${recipes[i].image}"/>
+      <span>Calories:${recipes[i].calories} Protein: ${recipes[i].protein} Carbs: ${recipes[i].carbs} fat:${recipes[i].fat}</span>
+      `;
+      console.log(div);
+
+      cookSection.appendChild(div);
+    }
+  });
 });
 
 function makeInput(nut) {
   const Input = document.createElement("input");
   Input.type = "number";
   Input.min = "0";
+  Input.id = `${nut}`;
   Input.placeholder = `How much ${nut} you want?`;
   Input.required = true;
   return Input;
