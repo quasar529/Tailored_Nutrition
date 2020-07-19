@@ -1,24 +1,5 @@
-// class Recipes {
-//   async tmpGet() {
-//     try {
-//       let results = await fetch(
-//         "https://api.spoonacular.com/recipes/findByNutrients?apiKey=9ef8ed83e4164a2eb14cf5bff7669c9a&minProtein=100&random&number=5"
-//       );
-//       let tmp = await results.json();
-
-//       return tmp;
-//     } catch (error) {
-//       console.log(error);
-//     }
-//   }
-// }
-
 async function getCook(string) {
   try {
-    // let typeOfNut = "";
-    // for (let i = 0; i < arguments.length; i++) {
-    //   typeOfNut += arguments[i];
-    // }
     let results = await fetch(
       `https://api.spoonacular.com/recipes/findByNutrients?apiKey=9ef8ed83e4164a2eb14cf5bff7669c9a&${string}&random&number=5`
     );
@@ -28,16 +9,25 @@ async function getCook(string) {
     console.log(error);
   }
 }
+async function getRecipe(id) {
+  try {
+    let recipe = await fetch(
+      `https://api.spoonacular.com/recipes/${id}/information?apiKey=9ef8ed83e4164a2eb14cf5bff7669c9a&includeNutrition=false`
+    );
 
-// document.addEventListener("DOMContentLoaded", () => {
-//   const temp = new Recipes();
-//   temp.tmpGet().then((cook) => {
-//     // let img = cook.image;
-//     // let inst = cook.instructions;
-//     // let title = cook.title;
-//     // console.log(img, inst, title);
-//   });
-// });
+    let data = recipe.json();
+    return data;
+
+    console.log(data);
+  } catch (error) {
+    console.log(error);
+  }
+}
+window.addEventListener("DOMContentLoaded", () => {
+  getRecipe(4632).then((recipe) => {
+    console.log(recipe.instructions);
+  });
+});
 const main = document.querySelector("main");
 const form = document.getElementById("ingredientForm");
 const section = document.querySelector(".ingredient-form");
@@ -49,7 +39,7 @@ form.addEventListener("submit", function (event) {
   submitBtn.disabled = true;
 
   let infoDiv = document.createElement("div");
-  infoDiv.innerText = "Type minimum amount of each nutrient";
+  infoDiv.innerText = "Type amount of each nutrient (gram)";
   infoDiv.classList.add("infoDiv");
 
   const allIngredients = document.getElementsByClassName("ingredient");
@@ -65,22 +55,32 @@ form.addEventListener("submit", function (event) {
     section.appendChild(numForm);
     numForm.id = "numForm";
     if (proteinChecked) {
+      const pInfo = document.createElement("span");
+      pInfo.innerText = "Protein (minimum)";
+
       const pInput = makeInput("protein");
+      numForm.appendChild(pInfo);
       numForm.appendChild(pInput);
     }
 
     if (carbChecked) {
+      const cInfo = document.createElement("span");
+      cInfo.innerText = "Carbs (minimum)";
       const cInput = makeInput("carbohydrate");
+      numForm.appendChild(cInfo);
       numForm.appendChild(cInput);
     }
     if (fatChecked) {
+      const fInfo = document.createElement("span");
+      fInfo.innerText = "Fat (minimum)";
       const fInput = makeInput("fat");
+      numForm.appendChild(fInfo);
       numForm.appendChild(fInput);
     }
-    const button = document.createElement("button");
-    button.type = "submit";
-    button.innerText = "GO";
-    numForm.appendChild(button);
+    const goButton = document.createElement("button");
+    goButton.type = "submit";
+    goButton.innerText = "GO";
+    numForm.appendChild(goButton);
     //numForm.action = "result.html";
   }
 });
@@ -105,19 +105,35 @@ numForm.addEventListener("submit", () => {
     const numOfFat = numForm.querySelector("#fat").value;
     string += `minFat=${numOfFat}&`;
   }
+  console.log(string);
+  let ids = [];
 
   getCook(string).then((recipes) => {
     for (let i = 0; i < 5; i++) {
       let div = document.createElement("div");
-      div.innerHTML = `<h3>${recipes[i].title}</h3>
-      <img src="${recipes[i].image}"/>
-      <span>Calories:${recipes[i].calories} Protein: ${recipes[i].protein} Carbs: ${recipes[i].carbs} fat:${recipes[i].fat}</span>
-      `;
-      console.log(div);
+      ids[i] = recipes[i].id;
+      div.id = `no${i}-cook`;
+      div.innerHTML = `<h3 class="propertyOfRecipe">${recipes[i].title}</h3>
+      <img class="propertyOfRecipe" src="${recipes[i].image}"/>
+      <span class="propertyOfRecipe">Calories:${recipes[i].calories} Protein: ${recipes[i].protein} Carbs: ${recipes[i].carbs} fat:${recipes[i].fat}</span>
+     `;
 
       cookSection.appendChild(div);
     }
   });
+
+  for (let i = 0; i < 5; i++) {
+    let id = ids[i];
+    getRecipe(id).then((info) => {
+      console.log(info);
+
+      let span = document.createElement("span");
+      span.innerText = info.instructions;
+      console.log(span);
+
+      //document.getElementById(`no${i}-cook`).appendChild(span);
+    });
+  }
 });
 
 function makeInput(nut) {

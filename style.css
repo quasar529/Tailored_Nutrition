@@ -43,4 +43,25 @@
   justify-content: space-evenly;
 }
 #numForm input {
+  margin: 3vh 0;
+}
+#cookSection {
+  text-align: center;
+}
+#cookSection div {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 5vh 0;
+}
+.propertyOfRecipe {
+  margin: 2vh 0;
+}
+#recipeDiv {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
