@@ -119,7 +119,8 @@ numForm.addEventListener("submit", () => {
       div.innerHTML = `<h3 class="propertyOfRecipe">${recipes[i].title}</h3>
       <img class="propertyOfRecipe" src="${recipes[i].image}"/>
       <span class="propertyOfRecipe">Calories:${recipes[i].calories} Protein: ${recipes[i].protein} Carbs: ${recipes[i].carbs} fat:${recipes[i].fat}</span>
-     `;
+     <button class="moreBtn">Show All</button>
+      `;
       cookSection.appendChild(div);
     }
     for (let i = 0; i < 3; i++) {
@@ -127,7 +128,7 @@ numForm.addEventListener("submit", () => {
         let span = document.createElement("span");
         span.id = "recipeInfo";
         if (info.instructions) {
-          span.innerText = info.instructions;
+          span.innerHTML = info.instructions;
 
           document.getElementById(`no${i}-cook`).appendChild(span);
         } else {
@@ -137,8 +138,32 @@ numForm.addEventListener("submit", () => {
       });
     }
   });
+  // setTimeout(() => {
+  //   document.querySelectorAll("#recipeInfo").forEach((info) => {
+  //     info.addEventListener("click", () => {
+  //       console.log(info);
+  //       info.classList.toggle("show-rest");
+  //     });
+  //   });
+  // }, 10000);
+  setTimeout(() => {
+    let moreBtns = document.querySelectorAll(".moreBtn");
+    moreBtns.forEach((moreBtn) => {
+      moreBtn.addEventListener("click", () => {
+        moreBtn.nextElementSibling.classList.toggle("show-rest");
+      });
+    });
+  }, 5000);
 });
 
+// const infos = document.querySelectorAll("#recipeInfo");
+// console.log(infos);
+// infos.forEach((info) => {
+//   info.addEventListener("mouseover", () => {
+//     console.log(info);
+//     info.classList.toggle("show-rest");
+//   });
+// });
 function makeInput(nut) {
   const Input = document.createElement("input");
   Input.type = "number";
